@@ -12,4 +12,8 @@ openvpn on asennettava ensin ja sitten vasta tämä lisäosa.
   
   
 -----
+asetustiedosto /etc/avpn/channels.cfg:  
+kanavan_nimi;vpn_nimi;striimin_url  
+  
+  
 
