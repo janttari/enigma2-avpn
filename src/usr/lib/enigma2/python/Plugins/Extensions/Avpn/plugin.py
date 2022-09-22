@@ -1,4 +1,3 @@
-import os
 from twisted.web import resource, http, util, server
 from Plugins.Plugin import PluginDescriptor
 #from twisted.web.util import redirectTo
