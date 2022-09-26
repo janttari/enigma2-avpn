@@ -20,3 +20,8 @@ Jos kyseinen striimi ei tarvitse vpn-yhteyttä, laita striimin nimeksi pelkkä "
   
   
 
+-----
+# TODO
+- [ ] Omaksi prosesssikseen tai ainakin ei-blokkaavaksi (nyt time.sleep esim)  
+  
+
