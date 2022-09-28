@@ -23,5 +23,7 @@ Jos kyseinen striimi ei tarvitse vpn-yhteyttä, laita striimin nimeksi pelkkä "
 -----
 # TODO
 - [ ] Omaksi prosesssikseen tai ainakin ei-blokkaavaksi (nyt time.sleep esim)  
-- [ ] konffien hakemisto?
+- [ ] konffien hakemisto?  
+- [ ] Virheiden käsittely, esim jos .ovpn-tiedostoa ei löydy  
+  
 

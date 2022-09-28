@@ -1,3 +1,8 @@
+#
+# opkg update && opkg install openvpn enigma2-plugin-systemplugins-serviceapp
+#
+
+from genericpath import isfile
 from twisted.web import resource, http, util, server
 from Plugins.Plugin import PluginDescriptor
 #from twisted.web.util import redirectTo
@@ -6,68 +11,83 @@ import os
 import datetime
 import time
 
-confpath="/etc/avpn"
-logpath="/tmp/avpn"
+confpath="/etc/avpn" #!TODO mikä oikea paikka?
+printpath="/tmp/avpn"
 
 def main(session, **kwargs):
     pass
 
+def bgprocess(): #!TODO mieti miten tää olis järkevää **avaa prosessin joka vahtii milloin openvpn-yhteyttä ei enää tarvita
+    cmd="ps ax|grep avpnbg.py|grep -ve grep"
+    try:
+        avpnbgpros=subprocess.check_output(cmd, shell=True).decode().rstrip()
+        print("avpnbg prosessi on jo päällä "+avpnbgpros)
+    except:
+        print("virhe saada nykyinen avpnbg prosessi, luodaan se!")
+        cmd="python3 "+os.path.dirname(os.path.realpath(__file__))+"/avpnbg.py &"
+        os.system(cmd)
 
-def log(logString):
-    if not os.path.exists(logpath):
-        os.makedirs(logpath)
-    tstamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    logString = "[apvn " + tstamp + "] " + logString +"\n"
-    with open(logpath+"/log.txt", "a+") as f:
-        f.write(logString)
-    print(logString)
-
-def waitForVpn(): #odottaa kunnes vpn ylhäällä !TODO keksi jotain muuta kuin sleep
-    log("odota vpn...")
-    time.sleep(3)
-    log("vpn valmis, ehkä :D")
+def waitForVpn(ud): #odottaa kunnes vpn ylhäällä(1) tai alhaalla(0) !TODO keksi jotain muuta kuin sleep
+    print("odota vpn...")
+    if ud == 1: #vpn on menossa päälle
+        for i in range(1, 10):
+            ofile = printpath+"/openvpnstd.txt" # vai err???
+            if os.path.isfile(ofile): 
+                with open(ofile,"r") as f:
+                    lines=f.readlines()
+                    if "opo" in lines: #vpn on nyt yhdistetty
+                        break
+            time.sleep(0.2)
+    else: #vpn on menossa alas
+        time.sleep(1)
+    print("vpn tila valmis, ehkä :D")
 
 def connectOpenvpn(name):
-    vpncmd="openvpn " + confpath + "/" + name + ".ovpn >" + logpath + "/openvpnstd.txt 2> " + logpath + "/openvpnerr.txt &"
-    log("opening openvpn: "+vpncmd)
+    bgprocess() #avaa taustaprosessi
+    if not os.path.exists("/dev/net/tun"):
+        os.system("mkdir -p /dev/net && mknod /dev/net/tun c 10 200 && chmod 600 /dev/net/tun")
+    if not os.path.exists(printpath):
+        os.mkdir(printpath)
+    vpncmd="openvpn " + confpath + "/" + name + ".ovpn >" + printpath + "/openvpnstd.txt 2> " + printpath + "/openvpnerr.txt &"
+    print("opening openvpn: "+vpncmd)
     os.system(vpncmd)
-    waitForVpn()
+    waitForVpn(1)
 
 def disconnectOpenvpn():
-    log("closing openvpn")
+    print("closing openvpn")
     os.system("killall -2 openvpn") #!TODO openvpn:ssä olisi tuki ohjauksellekin RTFM
-    waitForVpn()
+    waitForVpn(0)
 
 def runStream(streamName):
-    log("runstream "+streamName)
+    print("runstream "+streamName)
     with open(confpath + "/channels.cfg", "r") as f:
         lines = f.read().splitlines() 
 
     for line in lines:
         if len(line)>5 and not line.startswith("#"):
             name, wantedVpn, url = line.split(";")
-            log("luettu konffista "+name + wantedVpn + url)
+            print("luettu konffista "+name + wantedVpn + url)
             if name == streamName:
                 cmd="ps ax|grep openvpn|grep -ve grep"
                 try:
                     ovpnpros=subprocess.check_output(cmd, shell=True).decode().rstrip()
-                    log("openvpn prosessi "+ovpnpros)
+                    print("openvpn prosessi "+ovpnpros)
                 except:
                     ovpnpros=None
-                    log("virhe saada nykyinen openvpn prosessi")
+                    print("virhe saada nykyinen openvpn prosessi")
 
                 if ovpnpros: #jos openvpn-asiakas on käynnissä
                     curVpn=ovpnpros.split("/")[-1].replace(".ovpn", "") #käytössä olevan vpn-palvelimen nimi ilman .ovpn-päätettä
-                    log("nykyinen vpn " + curVpn)
+                    print("nykyinen vpn " + curVpn)
                     if curVpn != wantedVpn:
                         disconnectOpenvpn() #jos vpn on väärä, tapa se
-                        log("sammuta vpn " + curVpn)
+                        print("sammuta vpn " + curVpn)
                 else:
                     curVpn = None
 
                 if wantedVpn != "-" and curVpn != wantedVpn: #jos tämä striimi tarttee vpn:n (miinus niin ei tartte) ja käytössä ei oikea
                     connectOpenvpn(wantedVpn) #avaa oikea vpn
-                    log("open vpn " + wantedVpn)
+                    print("open vpn " + wantedVpn)
                 return url
 
 class AvpnSite(resource.Resource):
@@ -76,22 +96,11 @@ class AvpnSite(resource.Resource):
     def render_GET(self, req): #!TODO mikä redirect kelpaisi 4097-soittimelle?
         streamName=str(req.uri).split("?")[-1][:-1] #pelkkä halutun striimin nimi ilman ylimääräistä paskaa
         streamUrl=runStream(streamName)
-        req.setResponseCode(301) # Found
+        req.setResponseCode(302) # Found
         req.setHeader("Location", streamUrl)
         req.setHeader("Content-Type", "text/html; charset=UTF-8")
         return streamUrl.encode()
-        # req.redirect(streamUrl)
-        # req.finish()
-        # return server.NOT_DONE_YET
-        #return req
-            # util.redirectTo(streamUrl.encode(), req)
-        # util.request.finish()
-        # return server.NOT_DONE_YET
-        #resp="HTTP/1.1 302 Found\n Location: " +streamUrl
-        #return resp.encode()
-        #util.redirectTo(streamUrl.encode(), req)
-        #return (">"+streamUrl+"<").encode()
-        
+  
     def GET(self, var):
         return self.req.args.get(var, None)[0]
 
