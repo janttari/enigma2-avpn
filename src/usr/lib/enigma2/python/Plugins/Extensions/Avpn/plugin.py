@@ -38,7 +38,7 @@ def waitForVpn(ud): #odottaa kunnes vpn ylhäällä(1) tai alhaalla(0) !TODO kek
             ofile = printpath+"/openvpnstd.txt" # vai err???
             # log("vpnwaitloop", i, ofile)
             if os.path.isfile(ofile): 
-                log("on")
+                #log("on")
                 with open(ofile,"r") as f:
                     lines=f.readlines()
                     if len(lines) > 1:
@@ -47,10 +47,9 @@ def waitForVpn(ud): #odottaa kunnes vpn ylhäällä(1) tai alhaalla(0) !TODO kek
                             break
             time.sleep(0.2)
     else: #vpn on menossa alas
-        #ifconfig|grep tun
+        cmd="ifconfig|grep tun|grep -ve grep"
         for i in range(1, 50):
-            log("vpn_OFF_waitloop", i)
-            cmd="ifconfig|grep tun|grep -ve grep"
+            #log("vpn_OFF_waitloop", i)
             try:
                 avpnbgpros=subprocess.check_output(cmd, shell=True).decode().rstrip()
                 #log("openvpn vielä päällä")
@@ -78,14 +77,6 @@ def disconnectOpenvpn():
 
 def runVpn(ovpnName):
     log("runvpn "+ovpnName)
-    # with open(confpath + "/channels.cfg", "r") as f:
-    #     lines = f.read().splitlines() 
-
-    # for line in lines:
-    #     if len(line)>5 and not line.startswith("#"):
-    #         name, wantedVpn, url = line.split(";")
-    #         log("luettu konffista "+name + wantedVpn + url)
-    #         if name == streamName:
     cmd="ps ax|grep openvpn|grep -ve grep"
     try:
         ovpnpros=subprocess.check_output(cmd, shell=True).decode().rstrip()
@@ -122,7 +113,6 @@ class AvpnSite(resource.Resource): #********************************************
     req = None
     
     def render_GET(self, req): #!TODO mikä redirect kelpaisi 4097-soittimelle?
-        log("AAAAA", str(req.args))
         try:
             svpn=req.args[b"vpn"][0].decode()
             surl=req.args[b"url"][0].decode()
@@ -130,9 +120,6 @@ class AvpnSite(resource.Resource): #********************************************
             log("Virhe pyynnössä")
             return None
         log("Avataan", svpn, surl)
-        time.sleep(2)
-        #streamName=str(req.uri).split("?")[-1][:-1] #pelkkä halutun striimin nimi ilman ylimääräistä paskaa
-        #streamUrl=runStream(streamName) #qqq korvaa avaavpn
         runVpn(svpn)
         req.setResponseCode(302) # Found
         req.setHeader("Location", surl)
