@@ -1,17 +1,7 @@
 #NAME ip-tst (TV)
-#SERVICE 5002:0:0:0:0:0:0:0:0:0:http%3a//127.0.0.1/avpn?svt1:SVT1_5002
-#SERVICE 5002:0:0:0:0:0:0:0:0:0:http%3a//127.0.0.1/avpn?svt2:SVT2_5002
-#SERVICE 4097:0:0:0:0:0:0:0:0:0:http%3a//127.0.0.1/avpn?etv1:ETV1_4097
-#SERVICE 5001:0:0:0:0:0:0:0:0:0:http%3a//127.0.0.1/avpn?etv1:ETV1_5001
-#SERVICE 5002:0:0:0:0:0:0:0:0:0:http%3a//127.0.0.1/avpn?etv1:ETV1_5002
-#SERVICE 4097:0:0:0:0:0:0:0:0:0:http%3a//127.0.0.1/avpn?etv2:ETV2_4097
-#SERVICE 5001:0:0:0:0:0:0:0:0:0:http%3a//127.0.0.1/avpn?etv2:ETV2_5001
-#SERVICE 5002:0:0:0:0:0:0:0:0:0:http%3a//127.0.0.1/avpn?etv2:ETV2_5002
-#SERVICE 4097:0:0:0:0:0:0:0:0:1:http%3a//127.0.0.1/avpn?svt1:SVT1_4097
-#SERVICE 5001:0:0:0:0:0:0:0:0:0:http%3a//127.0.0.1/avpn?svt1:SVT1_5001
-#SERVICE 4097:0:0:0:0:0:0:0:0:0:http%3a//127.0.0.1/avpn?svt2:SVT2_4097
-#SERVICE 5001:0:0:0:0:0:0:0:0:0:http%3a//127.0.0.1/avpn?svt2:SVT2_5001
-#SERVICE 4097:0:19:64A:15:0:FFFF0000:0:0:0:https%3a//svt1-d.akamaized.net/se/svt1/master-fmp4.m3u8:SVT1_m3u8
-#SERVICE 4097:0:19:2C25:D:0:FFFF0000:0:0:0:https%3a//svt2-d.akamaized.net/se/svt2/master-fmp4.m3u8:SVT2_m3u8
-#SERVICE 4097:0:19:32CD:1E:0:FFFF0000:0:0:0:https%3a//svtb-d.akamaized.net/se/svtk/master-fmp4.m3u8:SVTK_m3u8
-#SERVICE 4097:0:19:29CD:7:0:FFFF0000:0:0:0:https%3a//svtb-d.akamaized.net/se/svtb/master-fmp4.m3u8:SVTB_m3u8
+#SERVICE 5002:0:0:0:0:0:0:0:0:0:http%3a//127.0.0.1/avpn%3Fvpn%3Dsverige%26url%3Dhttps%3A//svt1-d.akamaized.net/se/svt1/master-fmp4.m3u8:SVT1
+#SERVICE 5002:0:0:0:0:0:0:0:0:0:http%3a//127.0.0.1/avpn%3Fvpn%3Dsverige%26url%3Dhttps%3A//svt2-d.akamaized.net/se/svt2/master-fmp4.m3u8:SVT2
+#SERVICE 5002:0:0:0:0:0:0:0:0:0:http%3a//127.0.0.1/avpn%3Fvpn%3D-%26url%3Dhttps%3A//sb.err.ee/live/etv.m3u8:ETV1
+#SERVICE 5002:0:0:0:0:0:0:0:0:0:http%3a//127.0.0.1/avpn%3Fvpn%3D-%26url%3Dhttps%3A//sb.err.ee/live/etv2.m3u8:ETV2
+#SERVICE 1:0:1:11:1001:20F6:EEEE0000:0:0:0:
+#SERVICE 1:0:1:21:1001:20F6:EEEE0000:0:0:0:
