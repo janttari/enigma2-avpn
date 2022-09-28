@@ -12,8 +12,9 @@ openvpn on asennettava ensin ja sitten vasta tämä lisäosa.
   
   
 -----
-asetustiedosto /etc/avpn/channels.cfg:  
-kanavan_nimi;vpn_nimi;striimin_url  
+Tee userbouquetiin rivi käyttämällä avustinta: http://[enigma2_ip]/avpnurlhelper  
+Anna .ovpn-nimi ilman tiedostopäätettä.  
+
   
 Jos kyseinen striimi ei tarvitse vpn-yhteyttä, laita striimin nimeksi pelkkä "-".  
   

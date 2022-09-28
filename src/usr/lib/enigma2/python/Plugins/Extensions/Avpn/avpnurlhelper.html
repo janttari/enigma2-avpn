@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <script>
+            function createUrl() {
+                console.log("PPPPP")
+              let sname=document.getElementById("sname").value;
+              let surl=document.getElementById("surl").value;
+              let sovpn=document.getElementById("sovpn").value;
+              let splayer=document.getElementById("splayer").value;
+              let usurl=encodeURIComponent(surl);
+              let uu= usurl.replaceAll("%2F", "/");
+              let uuu = "http%3a//127.0.0.1/avpn%3Fvpn%3D"+sovpn+"%26"+"url%3D"+uu;
+              let seurl="#SERVICE "+splayer+":0:0:0:0:0:0:0:0:0:"+uuu+":"+sname;
+              document.getElementById("se2url").value=seurl;
+              console.log(seurl);
+            }
+            </script>
+
+    </head>
+<body>
+
+
+Channel name:
+<input type="text" id="sname">
+<br>
+Stream url:
+<input type="text" id="surl">
+<br>
+.ovpn name:
+<input type="text" id="sovpn" value="sverige">
+<br>
+Player:
+<input type="text" id="splayer" value="5002">
+<br>
+<button onclick="createUrl()">Create URL</button>
+<br><br><br><br>
+
+E2Url:
+<input type="text" id="se2url" size="150">
+<br>
+</body>
+</html>
