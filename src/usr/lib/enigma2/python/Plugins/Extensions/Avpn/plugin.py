@@ -65,7 +65,9 @@ def connectOpenvpn(name):
         os.system("mkdir -p /dev/net && mknod /dev/net/tun c 10 200 && chmod 600 /dev/net/tun")
     if not os.path.exists(printpath):
         os.mkdir(printpath)
-    vpncmd="openvpn " + confpath + "/" + name + ".ovpn >" + printpath + "/openvpnstd.txt 2> " + printpath + "/openvpnerr.txt &"
+    #vpncmd="openvpn " + confpath + "/" + name + ".ovpn >" + printpath + "/openvpnstd.txt 2> " + printpath + "/openvpnerr.txt &"
+    #sudo openvpn --config $* --auth-user-pass pass.txt
+    vpncmd="openvpn --cd " +  confpath + " --config " + name + ".ovpn --auth-user-pass pass.txt" + ">" + printpath + "/openvpnstd.txt 2> " + printpath + "/openvpnerr.txt &"
     log("opening openvpn: "+vpncmd)
     os.system(vpncmd)
     waitForVpn(1)
@@ -86,7 +88,10 @@ def runVpn(ovpnName):
         log("virhe saada nykyinen openvpn prosessi")
 
     if ovpnpros: #jos openvpn-asiakas on käynnissä
-        curVpn=ovpnpros.split("/")[-1].replace(".ovpn", "") #käytössä olevan vpn-palvelimen nimi ilman .ovpn-päätettä
+        #curVpn=ovpnpros.split("/")[-1].replace(".ovpn", "") #käytössä olevan vpn-palvelimen nimi ilman .ovpn-päätettä
+        wstart="--config "
+        wend=".ovpn"
+        curVpn = ovpnpros[ovpnpros.find(wstart)+len(wstart):ovpnpros.rfind(wend)]
         log("nykyinen vpn " + curVpn)
         if curVpn != ovpnName:
             disconnectOpenvpn() #jos vpn on väärä, tapa se
@@ -140,7 +145,8 @@ def sessionstart(reason, **kwargs):
     if reason == 0 and "session" in kwargs:                                                        
         if os.path.exists("/usr/lib/enigma2/python/Plugins/Extensions/WebInterface/WebChilds/Toplevel.py"):
             from Plugins.Extensions.WebInterface.WebChilds.Toplevel import addExternalChild
-            addExternalChild( ("avpn", AvpnSite(), "Avpn", "1", True) )
-            addExternalChild( ("avpnurlhelper", AvpnUrlHelper(), "Avpn", "1", True) ) 
+            #addExternalChild( ("avpn", AvpnSite(), "Avpn", "1", True) )
+            addExternalChild( ("avpn", AvpnSite(), "Avpn", "1", False) )
+            addExternalChild( ("avpnurlhelper", AvpnUrlHelper(), "AvpnUrlHelper", "1", True) ) 
         else:                                                                                  
             log("[avpn] Webif not found")
