@@ -26,5 +26,6 @@ Jos kyseinen striimi ei tarvitse vpn-yhteyttä, laita striimin nimeksi pelkkä "
 - [ ] Omaksi prosesssikseen tai ainakin ei-blokkaavaksi (nyt time.sleep esim)  
 - [ ] konffien hakemisto?  
 - [ ] Virheiden käsittely, esim jos .ovpn-tiedostoa ei löydy  
+- [ ] Pois OpenWebif-listalta avpn  
   
 
